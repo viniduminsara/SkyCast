@@ -6,7 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/components/useColorScheme';
+import { useColorScheme } from 'react-native';
 import {
   Poppins_200ExtraLight,
   Poppins_400Regular,
@@ -59,9 +59,10 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack initialRouteName='signIn'>
+      <Stack initialRouteName='signIn' screenOptions={{ animation: 'ios', headerShown: false }}>
         <Stack.Screen name="index" options={{ title: 'Sign in'}} />
-        <Stack.Screen name="(auth)" options={{ title: 'Auth'}} />
+        <Stack.Screen name="(auth)"/>
+        <Stack.Screen name="(app)"/>
       </Stack>
     </ThemeProvider>
   );
