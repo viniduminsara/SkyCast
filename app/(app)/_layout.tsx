@@ -28,6 +28,7 @@ const AppLayout = () => {
                 <Drawer.Screen name="index"/>
                 <Drawer.Screen name="settings"/>
                 <Drawer.Screen name="details/[name]" options={{ headerShown: false }}/>
+                <Drawer.Screen name="manageLocations" options={{ headerShown: false }}/>
             </Drawer>
         </GestureHandlerRootView>
     )
