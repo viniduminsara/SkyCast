@@ -208,7 +208,10 @@ const DashboardScreen = () => {
                                 handler={() =>
                                     router.push({
                                         pathname: `details/${data.location.name}`,
-                                        params: { weatherData: JSON.stringify(data) }
+                                        params: {
+                                            location: data.location.name,
+                                            country: data.location.country
+                                        }
                                     })}
                             />
                         ))}

@@ -36,7 +36,7 @@ const CustomDrawerContent = (props: React.JSX.IntrinsicAttributes & ScrollViewPr
                                 <SemiBoldText style={{marginLeft: 10, fontSize: 16, color: '#ffffff'}}>Dashboard</SemiBoldText>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                onPress={() => router.push('/(app)')}
+                                onPress={() => router.push('/manageLocations')}
                                 style={{flex: 1, flexDirection: 'row', alignItems: 'center', width: 200, marginVertical: 10}}>
                                 <MaterialCommunityIcons name="map-marker-plus" size={24} color="white"/>
                                 <SemiBoldText style={{marginLeft: 10, fontSize: 16, color: '#ffffff'}}>Add Location</SemiBoldText>

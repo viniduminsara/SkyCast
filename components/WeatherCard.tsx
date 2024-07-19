@@ -11,14 +11,6 @@ interface WeatherCardProps {
 }
 
 const WeatherCard = (props: WeatherCardProps) => {
-    const router = useRouter();
-
-    const handlePress = () => {
-        router.push({
-            pathname: 'details/1',
-            params: { name: props.data.location.name, country: props.data.location.country }
-        });
-    };
 
     return (
         <TouchableOpacity className='mr-4' onPress={props.handler}>

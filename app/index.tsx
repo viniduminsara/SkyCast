@@ -9,7 +9,7 @@ const RootScreen = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            router.push('/(app)')
+            router.replace('/(app)')
         }, 1000);
     }, [])
 
