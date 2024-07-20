@@ -207,7 +207,7 @@ const DashboardScreen = () => {
                                 data={data}
                                 handler={() =>
                                     router.push({
-                                        pathname: `details/${data.location.name}`,
+                                        pathname: `locations/${data.location.name}`,
                                         params: {
                                             location: data.location.name,
                                             country: data.location.country

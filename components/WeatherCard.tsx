@@ -1,7 +1,7 @@
 import {LinearGradient} from "expo-linear-gradient";
 import {Image, TouchableOpacity, View} from "react-native";
 import {BoldText, LightText, RegularText, SemiBoldText} from "@/components/StyledText";
-import {weatherIcons} from "@/constants/weatherIcons";
+import {weatherIcons} from "@/constants/WeatherIcons";
 import {Feather, MaterialCommunityIcons} from "@expo/vector-icons";
 import {useRouter} from "expo-router";
 

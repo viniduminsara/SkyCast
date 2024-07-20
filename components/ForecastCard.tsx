@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, ScrollView } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import {weatherIcons} from "@/constants/weatherIcons";
+import {weatherIcons} from "@/constants/WeatherIcons";
 import {useThemeColor} from "@/components/Themed";
 import {LightText, RegularText, SemiBoldText} from "@/components/StyledText";
 

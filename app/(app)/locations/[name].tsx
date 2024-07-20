@@ -5,11 +5,11 @@ import {LinearGradient} from "expo-linear-gradient";
 import {BoldText, LightText, RegularText, SemiBoldText} from "@/components/StyledText";
 import {FontAwesome6, MaterialCommunityIcons} from "@expo/vector-icons";
 import React, {useEffect, useRef, useState} from "react";
-import {weatherIcons} from "@/constants/weatherIcons";
+import {weatherIcons} from "@/constants/WeatherIcons";
 import WeatherDetailsCard from "@/components/WeatherDetailsCard";
 import {weatherTips} from "@/constants/WeatherTips";
 import MapView, {Marker} from "react-native-maps";
-import {darkMapStyle, lightMapStyle} from "@/constants/mapStyles";
+import {darkMapStyle, lightMapStyle} from "@/constants/MapStyles";
 const { StatusBarManager } = NativeModules;
 
 const DetailScreen = () => {

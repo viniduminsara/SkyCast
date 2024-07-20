@@ -1,6 +1,6 @@
 import React from 'react';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
-import {Entypo, Ionicons, MaterialCommunityIcons} from '@expo/vector-icons';
+import {Entypo, Ionicons, MaterialCommunityIcons, MaterialIcons} from '@expo/vector-icons';
 import {View, ScrollView, ScrollViewProps, TouchableOpacity} from 'react-native';
 import {useRouter} from "expo-router";
 import {LinearGradient} from "expo-linear-gradient";
@@ -36,10 +36,16 @@ const CustomDrawerContent = (props: React.JSX.IntrinsicAttributes & ScrollViewPr
                                 <SemiBoldText style={{marginLeft: 10, fontSize: 16, color: '#ffffff'}}>Dashboard</SemiBoldText>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                onPress={() => router.push('/manageLocations')}
+                                onPress={() => router.push('/locations/add')}
                                 style={{flex: 1, flexDirection: 'row', alignItems: 'center', width: 200, marginVertical: 10}}>
                                 <MaterialCommunityIcons name="map-marker-plus" size={24} color="white"/>
                                 <SemiBoldText style={{marginLeft: 10, fontSize: 16, color: '#ffffff'}}>Add Location</SemiBoldText>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => router.push('/locations/manage')}
+                                style={{flex: 1, flexDirection: 'row', alignItems: 'center', width: 200, marginVertical: 10}}>
+                                <MaterialIcons name="edit-location-alt" size={24} color="white" />
+                                <SemiBoldText style={{marginLeft: 10, fontSize: 16, color: '#ffffff'}}>Manage Locations</SemiBoldText>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => router.push('/settings')}
