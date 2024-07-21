@@ -11,6 +11,7 @@ interface WeatherCardProps {
 }
 
 const WeatherCard = (props: WeatherCardProps) => {
+    const iconSource = weatherIcons[props.data.current.condition.text];
 
     return (
         <TouchableOpacity className='mr-4' onPress={props.handler}>
@@ -20,7 +21,7 @@ const WeatherCard = (props: WeatherCardProps) => {
                         <LightText className='text-md text-white'>Chance of rain {props.data.current.cloud}%</LightText>
                         <SemiBoldText className='text-2xl text-white'>{props.data.current.condition.text}</SemiBoldText>
                     </View>
-                    <Image source={weatherIcons[props.data.current.condition.text]} className='w-24 h-24'/>
+                    <Image source={iconSource} className='w-24 h-24'/>
                 </View>
                 <View className='flex flex-row items-center gap-x-2'>
                     <MaterialCommunityIcons name="map-marker" size={24} color="white"/>
