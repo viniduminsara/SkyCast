@@ -14,6 +14,7 @@ import {
   Poppins_700Bold
 } from "@expo-google-fonts/poppins";
 import {SafeAreaProvider} from "react-native-safe-area-context";
+import {LocationProvider} from "@/context/LocationContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -61,11 +62,13 @@ function RootLayoutNav() {
   return (
       <SafeAreaProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack screenOptions={{ animation: 'ios', headerShown: false }}>
-            <Stack.Screen name="index"/>
-            <Stack.Screen name="(auth)"/>
-            <Stack.Screen name="(app)"/>
-          </Stack>
+          <LocationProvider>
+            <Stack screenOptions={{ animation: 'ios', headerShown: false }}>
+              <Stack.Screen name="index"/>
+              <Stack.Screen name="(auth)"/>
+              <Stack.Screen name="(app)"/>
+            </Stack>
+          </LocationProvider>
         </ThemeProvider>
       </SafeAreaProvider>
   );
