@@ -1,158 +1,19 @@
-import {Text, View, StyleSheet, Image, TouchableOpacity, ScrollView} from "react-native";
+import {View, ScrollView} from "react-native";
 import {SafeAreaView} from "@/components/Themed";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import WeatherCard from "@/components/WeatherCard";
 import NewsCard from "@/components/NewsCard";
 import {RegularText, SemiBoldText} from "@/components/StyledText";
 import ForecastCard from "@/components/ForecastCard";
 import {useRouter} from "expo-router";
+import {useLocation} from "@/context/LocationContext";
+import {fetchCurrentLocationData} from "@/api/weather";
 
 const DashboardScreen = () => {
 
     const router = useRouter();
-    const [weatherData, setWeatherData] = useState<WeatherData[]>([
-        {
-            location: {
-                name: "Kalutara",
-                region: "Western",
-                country: "Sri Lanka",
-                lat: 6.58,
-                lon: 79.96,
-                tz_id: "Asia/Colombo",
-                localtime_epoch: 1721197141,
-                localtime: "2024-07-17 11:49"
-            },
-            current: {
-                last_updated_epoch: 1721196900,
-                last_updated: "2024-07-17 11:45",
-                temp_c: 32.3,
-                temp_f: 90.1,
-                is_day: 1,
-                condition: {
-                    text: "Partly cloudy",
-                    icon: "//cdn.weatherapi.com/weather/64x64/day/116.png",
-                    code: 1003
-                },
-                wind_mph: 2.2,
-                wind_kph: 3.6,
-                wind_degree: 266,
-                wind_dir: "W",
-                pressure_mb: 1010.0,
-                pressure_in: 29.82,
-                precip_mm: 1.16,
-                precip_in: 0.05,
-                humidity: 71,
-                cloud: 50,
-                feelslike_c: 46.0,
-                feelslike_f: 114.8,
-                windchill_c: 26.7,
-                windchill_f: 80.1,
-                heatindex_c: 30.3,
-                heatindex_f: 86.5,
-                dewpoint_c: 23.9,
-                dewpoint_f: 74.9,
-                vis_km: 10.0,
-                vis_miles: 6.0,
-                uv: 6.0,
-                gust_mph: 18.3,
-                gust_kph: 29.4
-            }
-        },
-        {
-            location: {
-                name: "Kalutara",
-                region: "Western",
-                country: "Sri Lanka",
-                lat: 6.58,
-                lon: 79.96,
-                tz_id: "Asia/Colombo",
-                localtime_epoch: 1721197141,
-                localtime: "2024-07-17 11:49"
-            },
-            current: {
-                last_updated_epoch: 1721196900,
-                last_updated: "2024-07-17 11:45",
-                temp_c: 32.3,
-                temp_f: 90.1,
-                is_day: 1,
-                condition: {
-                    text: "Partly cloudy",
-                    icon: "//cdn.weatherapi.com/weather/64x64/day/116.png",
-                    code: 1003
-                },
-                wind_mph: 2.2,
-                wind_kph: 3.6,
-                wind_degree: 266,
-                wind_dir: "W",
-                pressure_mb: 1010.0,
-                pressure_in: 29.82,
-                precip_mm: 1.16,
-                precip_in: 0.05,
-                humidity: 71,
-                cloud: 50,
-                feelslike_c: 46.0,
-                feelslike_f: 114.8,
-                windchill_c: 26.7,
-                windchill_f: 80.1,
-                heatindex_c: 30.3,
-                heatindex_f: 86.5,
-                dewpoint_c: 23.9,
-                dewpoint_f: 74.9,
-                vis_km: 10.0,
-                vis_miles: 6.0,
-                uv: 6.0,
-                gust_mph: 18.3,
-                gust_kph: 29.4
-            }
-        },
-        {
-            location: {
-                name: "Kalutara",
-                region: "Western",
-                country: "Sri Lanka",
-                lat: 6.58,
-                lon: 79.96,
-                tz_id: "Asia/Colombo",
-                localtime_epoch: 1721197141,
-                localtime: "2024-07-17 11:49"
-            },
-            current: {
-                last_updated_epoch: 1721196900,
-                last_updated: "2024-07-17 11:45",
-                temp_c: 32.3,
-                temp_f: 90.1,
-                is_day: 1,
-                condition: {
-                    text: "Partly cloudy",
-                    icon: "//cdn.weatherapi.com/weather/64x64/day/116.png",
-                    code: 1003
-                },
-                wind_mph: 2.2,
-                wind_kph: 3.6,
-                wind_degree: 266,
-                wind_dir: "W",
-                pressure_mb: 1010.0,
-                pressure_in: 29.82,
-                precip_mm: 1.16,
-                precip_in: 0.05,
-                humidity: 71,
-                cloud: 50,
-                feelslike_c: 46.0,
-                feelslike_f: 114.8,
-                windchill_c: 26.7,
-                windchill_f: 80.1,
-                heatindex_c: 30.3,
-                heatindex_f: 86.5,
-                dewpoint_c: 23.9,
-                dewpoint_f: 74.9,
-                vis_km: 10.0,
-                vis_miles: 6.0,
-                uv: 6.0,
-                gust_mph: 18.3,
-                gust_kph: 29.4
-            }
-        }
-    ]);
+    const {location} = useLocation();
+    const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
     const [news, setNews] = useState<NewsArticle>(
         {
             uuid: "c6953fc5-455e-4a3a-9aa1-88bd7c74ecee",
@@ -193,6 +54,16 @@ const DashboardScreen = () => {
             return 'Good Night';
         }
     };
+
+    useEffect(() => {
+        if (location) {
+            fetchCurrentLocationData(location)
+                .then((data) => {
+                    console.log(data)
+                    setWeatherData([data])
+                })
+        }
+    }, []);
 
     return (
         <SafeAreaView className='w-full h-full px-4'>
