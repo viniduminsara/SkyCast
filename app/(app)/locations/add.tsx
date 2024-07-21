@@ -9,6 +9,7 @@ import {darkMapStyle, lightMapStyle} from "@/constants/MapStyles";
 import {debounce} from "lodash";
 import {fetchSearchData} from "@/api/weather";
 import BottomSheet, {BottomSheetModal} from "@gorhom/bottom-sheet";
+import CustomHeader from "@/components/CustomHeader";
 const {StatusBarManager} = NativeModules;
 
 const AddLocationsScreen = () => {
@@ -54,13 +55,7 @@ const AddLocationsScreen = () => {
     return (
         <SafeAreaView className='w-full h-full'
                       style={{paddingTop: Platform.OS === 'android' ? StatusBarManager.HEIGHT : 0,}}>
-            <View className='flex flex-row justify-between items-center py-6 px-8'>
-                <TouchableOpacity onPress={() => router.back()}>
-                    <FontAwesome6 name="chevron-left" size={24} color={color}/>
-                </TouchableOpacity>
-                <SemiBoldText className='text-lg'>Add Locations</SemiBoldText>
-                <MaterialCommunityIcons name="dots-horizontal" size={24} color={color}/>
-            </View>
+            <CustomHeader title='Add Locations'/>
             <View className=''>
                 <View className='flex flex-row justify-around items-center rounded-full shadow px-4 py-2 mx-4 mb-4'
                       style={{backgroundColor: bgColor}}>

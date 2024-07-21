@@ -1,5 +1,5 @@
 import {Image, NativeModules, Platform, ScrollView, TouchableOpacity, useColorScheme, View} from "react-native";
-import {SafeAreaView, Text, useThemeColor} from "@/components/Themed";
+import {SafeAreaView, useThemeColor} from "@/components/Themed";
 import {useLocalSearchParams, useRouter} from "expo-router";
 import {LinearGradient} from "expo-linear-gradient";
 import {BoldText, LightText, RegularText, SemiBoldText} from "@/components/StyledText";
@@ -10,11 +10,12 @@ import WeatherDetailsCard from "@/components/WeatherDetailsCard";
 import {weatherTips} from "@/constants/WeatherTips";
 import MapView, {Marker} from "react-native-maps";
 import {darkMapStyle, lightMapStyle} from "@/constants/MapStyles";
+import SwitchSelector from "react-native-switch-selector";
 const { StatusBarManager } = NativeModules;
 
 const DetailScreen = () => {
     const {location, country} = useLocalSearchParams();
-    const [activeButton, setActiveButton] = useState<string>('today');
+    const [activeType, setActiveType] = useState<string | number>('today');
     const [weather, setWeather] = useState<WeatherData>(
         {
             location: {
@@ -121,29 +122,24 @@ const DetailScreen = () => {
                             className='w-80 rounded-3xl px-6 py-4'
                             start={{x: 0.7, y: 0}}
                         >
-                            <View className='flex flex-row justify-between'>
-                                <TouchableOpacity
-                                    className={activeButton === 'yesterday' ? 'bg-primary py-2 px-3 rounded-2xl' : 'py-2 px-3'}
-                                    onPress={() => setActiveButton('yesterday')}
-                                >
-                                    <RegularText
-                                        className={activeButton === 'yesterday' ? 'text-white' : 'text-black'}>Yesterday</RegularText>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    className={activeButton === 'today' ? 'bg-primary py-2 px-3 rounded-2xl' : 'py-2 px-3'}
-                                    onPress={() => setActiveButton('today')}
-                                >
-                                    <RegularText
-                                        className={activeButton === 'today' ? 'text-white' : 'text-black'}>Today</RegularText>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    className={activeButton === 'tomorrow' ? 'bg-primary py-2 px-3 rounded-2xl' : 'py-2 px-3'}
-                                    onPress={() => setActiveButton('tomorrow')}
-                                >
-                                    <RegularText
-                                        className={activeButton === 'tomorrow' ? 'text-white' : 'text-black'}>Tomorrow</RegularText>
-                                </TouchableOpacity>
-                            </View>
+                            <SwitchSelector
+                                initial={1}
+                                onPress={(value) => setActiveType(value)}
+                                textColor="#6B7280"
+                                selectedColor="#FFFFFF"
+                                buttonColor="#7CA9FF"
+                                borderColor='#ffffff00'
+                                backgroundColor='#ffffff00'
+                                hasPadding
+                                options={[
+                                    {label: 'Yesterday', value: 'yesterday'},
+                                    {label: 'Today', value: 'today'},
+                                    {label: 'Tomorrow', value: 'Tomorrow'},
+                                ]}
+                                style={{ width: '100%',}}
+                                textStyle={{ fontFamily: 'Poppins-Regular'}}
+                                selectedTextStyle={{ fontFamily: 'Poppins-Regular'}}
+                            />
                             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
                                         contentContainerStyle={{flexGrow: 1}} className="mt-4">
                                 {forecastData.map((hour: any, index: number) => (

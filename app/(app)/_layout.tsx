@@ -26,7 +26,7 @@ const AppLayout = () => {
                 })}
             >
                 <Drawer.Screen name="index"/>
-                <Drawer.Screen name="settings"/>
+                <Drawer.Screen name="settings" options={{ headerShown: false }}/>
                 <Drawer.Screen name="locations/[name]" options={{ headerShown: false }}/>
                 <Drawer.Screen name="locations/add" options={{ headerShown: false }}/>
                 <Drawer.Screen name="locations/manage" options={{ headerShown: false }}/>
