@@ -1,4 +1,4 @@
-import {View, ScrollView} from "react-native";
+import {View, ScrollView, Alert} from "react-native";
 import {SafeAreaView} from "@/components/Themed";
 import React, {useEffect, useState} from "react";
 import WeatherCard from "@/components/WeatherCard";
@@ -14,6 +14,7 @@ const DashboardScreen = () => {
     const router = useRouter();
     const {location} = useLocation();
     const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
+    const [currentLocationData, setCurrentLocationData] = useState<ForecastData | undefined>(undefined);
     const [news, setNews] = useState<NewsArticle>(
         {
             uuid: "c6953fc5-455e-4a3a-9aa1-88bd7c74ecee",
@@ -34,14 +35,6 @@ const DashboardScreen = () => {
         }
     );
 
-    const forecastData:any = [
-        { time: '2 PM', icon: 'Overcast', temperature: 32 },
-        { time: '3 PM', icon: 'Heavy rain', temperature: 30 },
-        { time: '4 PM', icon: 'Moderate or heavy rain with thunder', temperature: 29 },
-        { time: '5 PM', icon: 'Light rain shower', temperature: 29 },
-        { time: '6 PM', icon: 'Sunny', temperature: 31 },
-    ];
-
     const getGreeting = () => {
         const currentHour = new Date().getHours();
         if (currentHour < 12) {
@@ -59,8 +52,15 @@ const DashboardScreen = () => {
         if (location) {
             fetchCurrentLocationData(location)
                 .then((data) => {
-                    console.log(data)
-                    setWeatherData([data])
+                    if (data !== null){
+                        console.log(data)
+                        setWeatherData(
+                            prevWeatherData => [...prevWeatherData, {location: data.location, current: data.current}]
+                        );
+                        setCurrentLocationData(data);
+                    }else {
+                        Alert.alert('Something went wrong', 'Please check your internet connection');
+                    }
                 })
         }
     }, []);
@@ -90,7 +90,11 @@ const DashboardScreen = () => {
                 </View>
                 <View className='mt-6'>
                     <SemiBoldText className='text-2xl mb-4'>Forecast</SemiBoldText>
-                    <ForecastCard data={forecastData}/>
+                    {currentLocationData ?
+                        <ForecastCard data={currentLocationData}/>
+                        :
+                        <RegularText>Loading...</RegularText>
+                    }
                 </View>
                 <View className='mt-6'>
                     <SemiBoldText className='text-2xl mb-4'>News</SemiBoldText>
