@@ -9,13 +9,14 @@ type OcticonNames = keyof typeof Octicons.glyphMap;
 interface SettingsItemProps {
     title: string;
     iconName: OcticonNames;
+    handler?: () => void;
 }
 
 const SettingsItem = (props: SettingsItemProps) => {
     const color = useThemeColor({}, 'text');
 
     return (
-        <TouchableOpacity className='flex-row justify-between items-center py-4'>
+        <TouchableOpacity className='flex-row justify-between items-center py-4' onPress={props.handler}>
             <View className='flex-row items-center gap-x-4'>
                 <Octicons name={props.iconName} size={20} color={color}/>
                 <RegularText className='text-lg'>{props.title}</RegularText>
