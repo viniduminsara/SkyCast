@@ -12,6 +12,7 @@ import MapView, {Marker} from "react-native-maps";
 import {darkMapStyle, lightMapStyle} from "@/constants/MapStyles";
 import SwitchSelector from "react-native-switch-selector";
 import {fetchHistoryLocationData, fetchWeatherData} from "@/api/weather";
+import {PROVIDER_GOOGLE} from "react-native-maps"
 
 const {StatusBarManager} = NativeModules;
 
@@ -159,6 +160,7 @@ const DetailScreen = () => {
                         <View className="w-full rounded-2xl my-4" style={{backgroundColor: bgColor}}>
                             <View className='rounded-t-2xl' style={{overflow: 'hidden'}}>
                                 <MapView
+                                    provider={PROVIDER_GOOGLE}
                                     ref={mapRef}
                                     className='w-full h-40'
                                     customMapStyle={colorScheme === 'dark' ? darkMapStyle : lightMapStyle}

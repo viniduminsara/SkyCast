@@ -8,6 +8,7 @@ import ForecastCard from "@/components/ForecastCard";
 import {useRouter} from "expo-router";
 import {useLocation} from "@/context/LocationContext";
 import {fetchCurrentLocationData} from "@/api/weather";
+import auth from "@react-native-firebase/auth";
 
 const DashboardScreen = () => {
 
@@ -34,6 +35,7 @@ const DashboardScreen = () => {
             locale: "za"
         }
     );
+    const user = auth().currentUser;
 
     const getGreeting = () => {
         const currentHour = new Date().getHours();
@@ -68,7 +70,7 @@ const DashboardScreen = () => {
     return (
         <SafeAreaView className='w-full h-full px-4'>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <SemiBoldText className='text-4xl'>Hi There Vinidu</SemiBoldText>
+                <SemiBoldText className='text-4xl'>Hi There {user?.displayName?.split(' ')[0]}</SemiBoldText>
                 <RegularText className='text-xl mb-4'>{getGreeting()}</RegularText>
                 <View className='h-auto'>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{flexGrow: 1}}>

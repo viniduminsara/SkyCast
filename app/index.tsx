@@ -3,14 +3,20 @@ import {ActivityIndicator, Button, Linking} from "react-native";
 import {useRouter} from "expo-router";
 import {useEffect} from "react";
 import {useLocation} from "@/context/LocationContext";
+import auth from "@react-native-firebase/auth";
 
 const RootScreen = () => {
     const router = useRouter();
     const {location} = useLocation();
+    const user = auth().currentUser;
 
     useEffect(() => {
         if (location) {
-            router.replace('/(app)');
+            if (user) {
+                router.replace('/(app)');
+            }else {
+                router.replace('/(auth)/sign-in');
+            }
         }
     }, [location]);
 

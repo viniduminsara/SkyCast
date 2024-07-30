@@ -1,14 +1,39 @@
-import {NativeModules, Platform, View} from "react-native";
+import {Alert, NativeModules, Platform, View} from "react-native";
 import {SafeAreaView, useThemeColor} from "@/components/Themed";
 import CustomHeader from "@/components/CustomHeader";
 import React from "react";
 import {SemiBoldText} from "@/components/StyledText";
 import ToggleInput from "@/components/ToggleInput";
 import SettingsItem from "@/components/SettingsItem";
+import auth from "@react-native-firebase/auth";
 const {StatusBarManager} = NativeModules;
 
 const SettingsScreen = () => {
     const bgColor = useThemeColor({}, 'cardColor');
+
+    const handleSignOut = () => {
+        Alert.alert(
+            'Sign out Confirmation',
+            'Are you sure you want to logout?',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Logout cancelled'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'Sign out',
+                    onPress: () => {
+                        auth().signOut()
+                            .then(() => {
+                                console.log('User signed out!')
+                            })
+                    },
+                },
+            ],
+            { cancelable: false }
+        );
+    }
 
     return (
         <SafeAreaView className='w-full h-full' style={{paddingTop: Platform.OS === 'android' ? StatusBarManager.HEIGHT : 0,}}>
@@ -50,7 +75,7 @@ const SettingsScreen = () => {
                         <SettingsItem title='About Weather app' iconName='info'/>
                         <SettingsItem title='Share' iconName='share-android'/>
                         <SettingsItem title='Join with us' iconName='people'/>
-                        <SettingsItem title='Mobile data limit' iconName='broadcast'/>
+                        <SettingsItem title='Sign out' iconName='sign-out' handler={handleSignOut}/>
                     </View>
                 </View>
             </View>

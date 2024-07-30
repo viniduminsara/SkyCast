@@ -11,6 +11,7 @@ import {fetchSearchData} from "@/api/weather";
 import BottomSheet, {BottomSheetModal} from "@gorhom/bottom-sheet";
 import CustomHeader from "@/components/CustomHeader";
 const {StatusBarManager} = NativeModules;
+import {PROVIDER_GOOGLE} from "react-native-maps"
 
 const AddLocationsScreen = () => {
     const router = useRouter();
@@ -85,6 +86,7 @@ const AddLocationsScreen = () => {
                     }
                 </View>
                 <MapView
+                    provider={PROVIDER_GOOGLE}
                     ref={mapRef}
                     customMapStyle={colorScheme === 'dark' ? darkMapStyle : lightMapStyle}
                     className='w-full h-full'
