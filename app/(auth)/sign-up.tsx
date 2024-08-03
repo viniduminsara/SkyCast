@@ -7,6 +7,8 @@ import {useRouter} from "expo-router";
 import StyledTextInput from "@/components/StyledTextInput";
 import PasswordInput from "@/components/PasswordInput";
 import auth from '@react-native-firebase/auth';
+import firestore from "@react-native-firebase/firestore";
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const SignupScreen = () => {
 
@@ -15,38 +17,98 @@ const SignupScreen = () => {
     const [name, setName] = useState('');
     const router = useRouter();
 
+    GoogleSignin.configure({
+        webClientId: '191231634753-uoq0oc0i32h8n6do7ped45qtur8mkpsc.apps.googleusercontent.com',
+    });
+
+    const handleGoogleSignup = async () => {
+        try {
+            await GoogleSignin.signOut();
+
+            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
+            const { idToken } = await GoogleSignin.signIn();
+
+            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+            auth().signInWithCredential(googleCredential)
+                .then((userCredential) => {
+                    console.log(userCredential.user);
+
+                    firestore()
+                        .collection('users')
+                        .add({
+                            userId: userCredential.user.uid,
+                            userName: userCredential.user.displayName,
+                            locations: [],
+                        })
+                        .then(() => {
+                            router.replace('/(app)');
+                            console.log('User added successfully!');
+                        })
+                        .catch(error => {
+                            Alert.alert('Error creating user: ', error);
+                        });
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
     const handleSignUp = () => {
-        auth()
-            .createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                console.log('User account created & signed in!');
+        if (name && email && password) {
+            auth()
+                .createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log('User account created & signed in!');
 
-                userCredential.user.updateProfile({ displayName: name })
-                    .then(() => {
-                        router.replace('/(app)')
-                    })
-            })
-            .then(() => {
-                console.log('User profile updated with display name!');
-            })
-            .catch(error => {
-                if (error.code === 'auth/email-already-in-use') {
-                    Alert.alert('Email Already in Use', 'This email address is already in use!');
-                    return;
-                }
+                    userCredential.user.updateProfile({displayName: name})
+                        .then(() => {
 
-                if (error.code === 'auth/invalid-email') {
-                    Alert.alert('Invalid Email', 'This email address is invalid!');
-                    return;
-                }
+                            firestore()
+                                .collection('users')
+                                .add({
+                                    userId: userCredential.user.uid,
+                                    userName: userCredential.user.displayName,
+                                    locations: [],
+                                })
+                                .then(() => {
+                                    router.replace('/(app)');
+                                    console.log('User added successfully!');
+                                })
+                                .catch(error => {
+                                    Alert.alert('Error creating user: ', error);
+                                });
+                        })
+                })
+                .then(() => {
+                    console.log('User profile updated with display name!');
+                })
+                .catch(error => {
+                    if (error.code === 'auth/email-already-in-use') {
+                        Alert.alert('Email Already in Use', 'This email address is already in use!');
+                        return;
+                    }
 
-                if (error.code === 'auth/weak-password') {
-                    Alert.alert('Weak Password', 'Password should be at least 6 characters.');
-                    return;
-                }
+                    if (error.code === 'auth/invalid-email') {
+                        Alert.alert('Invalid Email', 'This email address is invalid!');
+                        return;
+                    }
 
-                console.error(error);
-            });
+                    if (error.code === 'auth/weak-password') {
+                        Alert.alert('Weak Password', 'Password should be at least 6 characters.');
+                        return;
+                    }
+
+                    console.error(error);
+                });
+        }else {
+            Alert.alert('Invalid Inputs', 'Please enter name, email and password correctly.')
+        }
     }
 
     return (
@@ -67,7 +129,9 @@ const SignupScreen = () => {
             <LightText className='text-center mb-8'>Or continue with</LightText>
             <View className='flex flex-row w-full justify-center items-center gap-x-8'>
                 <Entypo name="facebook" size={36} color="#7CA9FF" />
-                <AntDesign name="google" size={36} color="#7CA9FF" />
+                <TouchableOpacity onPress={handleGoogleSignup}>
+                    <AntDesign name="google" size={36} color="#7CA9FF"/>
+                </TouchableOpacity>
                 <AntDesign name="instagram" size={36} color="#7CA9FF" />
             </View>
             <View className='absolute bottom-8'>

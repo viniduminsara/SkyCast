@@ -7,6 +7,7 @@ import {useRouter} from "expo-router";
 import StyledTextInput from "@/components/StyledTextInput";
 import PasswordInput from "@/components/PasswordInput";
 import auth from "@react-native-firebase/auth";
+import {GoogleSignin} from "@react-native-google-signin/google-signin";
 
 const SignInScreen = () => {
 
@@ -14,41 +15,72 @@ const SignInScreen = () => {
     const [password, setPassword] = useState('');
     const router = useRouter();
 
+    GoogleSignin.configure({
+        webClientId: '191231634753-uoq0oc0i32h8n6do7ped45qtur8mkpsc.apps.googleusercontent.com',
+    });
+
+    const handleGoogleSignIn = async () => {
+        try {
+            await GoogleSignin.signOut();
+
+            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
+            const { idToken } = await GoogleSignin.signIn();
+
+            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+            auth().signInWithCredential(googleCredential)
+                .then((userCredential) => {
+                    console.log(userCredential.user);
+                    router.replace('/(app)')
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handleSignIn = () => {
-        auth()
-            .signInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                console.log('User signed in successfully!');
+        if (email && password) {
+            auth()
+                .signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log('User signed in successfully!');
 
-                // You can access the signed-in user's information here
-                const user = userCredential.user;
-                console.log('User display name:', user.displayName);
+                    // You can access the signed-in user's information here
+                    const user = userCredential.user;
+                    console.log('User display name:', user.displayName);
 
-                router.replace('/(app)')
-            })
-            .catch(error => {
-                if (error.code === 'auth/user-not-found') {
-                    Alert.alert('No user found with this email address!');
-                    return;
-                }
+                    router.replace('/(app)')
+                })
+                .catch(error => {
+                    if (error.code === 'auth/user-not-found') {
+                        Alert.alert('No user found with this email address!');
+                        return;
+                    }
 
-                if (error.code === 'auth/wrong-password') {
-                    Alert.alert('Incorrect password!');
-                    return;
-                }
+                    if (error.code === 'auth/wrong-password') {
+                        Alert.alert('Incorrect password!');
+                        return;
+                    }
 
-                if (error.code === 'auth/invalid-email') {
-                    Alert.alert('That email address is invalid!');
-                    return;
-                }
+                    if (error.code === 'auth/invalid-email') {
+                        Alert.alert('That email address is invalid!');
+                        return;
+                    }
 
-                if (error.code === 'auth/invalid-credential') {
-                    Alert.alert('Invalid credentials!', 'Please enter the correct email and password.');
-                    return;
-                }
+                    if (error.code === 'auth/invalid-credential') {
+                        Alert.alert('Invalid credentials!', 'Please enter the correct email and password.');
+                        return;
+                    }
 
-                console.error(error);
-            });
+                    console.error(error);
+                });
+        }else {
+            Alert.alert('Invalid Inputs', 'Please enter email and password correctly.')
+        }
     };
 
     return (
@@ -68,7 +100,9 @@ const SignInScreen = () => {
             <LightText className='text-center mb-8'>Or continue with</LightText>
             <View className='flex flex-row w-full justify-center items-center gap-x-8'>
                 <Entypo name="facebook" size={36} color="#7CA9FF" />
-                <AntDesign name="google" size={36} color="#7CA9FF" />
+                <TouchableOpacity onPress={handleGoogleSignIn}>
+                    <AntDesign name="google" size={36} color="#7CA9FF" />
+                </TouchableOpacity>
                 <AntDesign name="instagram" size={36} color="#7CA9FF" />
             </View>
             <View className='absolute bottom-8'>

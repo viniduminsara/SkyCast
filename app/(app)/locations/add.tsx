@@ -1,5 +1,14 @@
 import {SafeAreaView, useThemeColor} from "@/components/Themed";
-import {Keyboard, NativeModules, Platform, TextInput, TouchableOpacity, useColorScheme, View} from "react-native";
+import {
+    Alert,
+    Keyboard,
+    NativeModules,
+    Platform,
+    TextInput,
+    TouchableOpacity,
+    useColorScheme,
+    View
+} from "react-native";
 import {AntDesign, Entypo, FontAwesome6, MaterialCommunityIcons} from "@expo/vector-icons";
 import {LightText, RegularText, SemiBoldText} from "@/components/StyledText";
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
@@ -12,6 +21,7 @@ import BottomSheet, {BottomSheetModal} from "@gorhom/bottom-sheet";
 import CustomHeader from "@/components/CustomHeader";
 const {StatusBarManager} = NativeModules;
 import {PROVIDER_GOOGLE} from "react-native-maps"
+import {useLocation} from "@/context/LocationContext";
 
 const AddLocationsScreen = () => {
     const router = useRouter();
@@ -24,6 +34,7 @@ const AddLocationsScreen = () => {
     const mapRef = useRef<MapView>(null);
     const snapShots = useMemo(() => ['10%','22%'], []);
     const bottomSheetRef = useRef<BottomSheet>(null);
+    const {userLocations, addLocation} = useLocation();
 
     useEffect(() => {
         if (!searchedLocation) return;
@@ -51,6 +62,24 @@ const AddLocationsScreen = () => {
         } else if (value.length === 0) {
             setSearchResults([]);
         }
+    }
+
+    function handleLocationAdd() {
+        const newLocation = `${searchedLocation?.name}, ${searchedLocation?.country}`;
+
+        if (userLocations.length >= 5) {
+            Alert.alert('Location cannot be added', 'Only 5 locations can be added for an account.');
+            return;
+        }
+
+        if (userLocations.includes(newLocation)) {
+            Alert.alert('Location already added', 'This location has already been added to your list.');
+            return;
+        }
+
+        addLocation(newLocation);
+        setSearchedLocation(undefined);
+        bottomSheetRef.current?.close();
     }
 
     return (
@@ -116,10 +145,10 @@ const AddLocationsScreen = () => {
                             <MaterialCommunityIcons name="map-marker" size={30} color={color}/>
                             <View className='gap-y-1'>
                                 <SemiBoldText className='text-xl'>{searchedLocation?.name}</SemiBoldText>
-                                <LightText className='text-sm'>{searchedLocation?.region}, {searchedLocation?.country}</LightText>
+                                <LightText className='text-sm'>{searchedLocation?.region.slice(0, 12)}... , {searchedLocation?.country}</LightText>
                             </View>
                         </View>
-                        <TouchableOpacity className='px-3 py-1.5 bg-primary rounded-xl flex-row items-center'>
+                        <TouchableOpacity className='px-3 py-1.5 bg-primary rounded-xl flex-row items-center' onPress={handleLocationAdd}>
                             <Entypo name="plus" size={24} color="white" />
                             <RegularText className='text-lg text-white'>Add</RegularText>
                         </TouchableOpacity>

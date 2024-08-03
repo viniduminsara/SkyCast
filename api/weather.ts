@@ -22,6 +22,8 @@ const currentLocationEndPoint = (query: LocationObject) => `${forecastUrl}?key=$
 
 const historyEndPoint = (query: string) => `${historyUrl}?key=${weatherApiKey}&q=${query}&dt=${getYesterdayDate()}`;
 
+const locationWeatherEndPoint = (query: string) => `${currentUrl}?key=${weatherApiKey}&q=${query}`;
+
 const apiCall = async (endpoint: string) => {
     const options = {
         method: 'GET',
@@ -51,5 +53,9 @@ export const fetchCurrentLocationData = (location: LocationObject) => {
 
 export const fetchHistoryLocationData = (query: string) => {
     return apiCall(historyEndPoint(query));
+}
+
+export const fetchLocationWeatherData = (query: string) => {
+    return apiCall(locationWeatherEndPoint(query));
 }
 

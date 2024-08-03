@@ -1,4 +1,4 @@
-import {View, ScrollView, Alert} from "react-native";
+import {View, ScrollView, Alert, ActivityIndicator} from "react-native";
 import {SafeAreaView} from "@/components/Themed";
 import React, {useEffect, useState} from "react";
 import WeatherCard from "@/components/WeatherCard";
@@ -7,15 +7,13 @@ import {RegularText, SemiBoldText} from "@/components/StyledText";
 import ForecastCard from "@/components/ForecastCard";
 import {useRouter} from "expo-router";
 import {useLocation} from "@/context/LocationContext";
-import {fetchCurrentLocationData} from "@/api/weather";
 import auth from "@react-native-firebase/auth";
+import {LinearGradient} from "expo-linear-gradient";
 
 const DashboardScreen = () => {
 
     const router = useRouter();
-    const {location} = useLocation();
-    const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
-    const [currentLocationData, setCurrentLocationData] = useState<ForecastData | undefined>(undefined);
+    const {weatherData, currentLocationData} = useLocation();
     const [news, setNews] = useState<NewsArticle>(
         {
             uuid: "c6953fc5-455e-4a3a-9aa1-88bd7c74ecee",
@@ -50,23 +48,6 @@ const DashboardScreen = () => {
         }
     };
 
-    useEffect(() => {
-        if (location) {
-            fetchCurrentLocationData(location)
-                .then((data) => {
-                    if (data !== null){
-                        console.log(data)
-                        setWeatherData(
-                            prevWeatherData => [...prevWeatherData, {location: data.location, current: data.current}]
-                        );
-                        setCurrentLocationData(data);
-                    }else {
-                        Alert.alert('Something went wrong', 'Please check your internet connection');
-                    }
-                })
-        }
-    }, []);
-
     return (
         <SafeAreaView className='w-full h-full px-4'>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -74,6 +55,29 @@ const DashboardScreen = () => {
                 <RegularText className='text-xl mb-4'>{getGreeting()}</RegularText>
                 <View className='h-auto'>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{flexGrow: 1}}>
+                        {currentLocationData ?
+                            <WeatherCard
+                                data={{location: currentLocationData.location, current: currentLocationData.current}}
+                                handler={() =>
+                                    router.push({
+                                        pathname: `locations/${currentLocationData.location.name}`,
+                                        params: {
+                                            location: currentLocationData.location.name,
+                                            country: currentLocationData.location.country
+                                        }
+                                    })}
+                                currentLocation={true}
+                            />
+
+                            :
+
+                            <LinearGradient
+                                colors={['#3C6FD1', '#7CA9FF']} start={{ x: 0.3, y: 0.2 }}
+                                className='w-80 h-48 px-4 py-4 rounded-2xl flex justify-center items-center mr-4'
+                            >
+                                <ActivityIndicator color='white' size='large'/>
+                            </LinearGradient>
+                        }
                         {weatherData.map((data, index) => (
                             <WeatherCard
                                 key={index}

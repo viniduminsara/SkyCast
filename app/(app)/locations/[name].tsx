@@ -66,7 +66,7 @@ const DetailScreen = () => {
                     Alert.alert('Something went wrong', 'Please check your internet connection');
                 }
             });
-    }, []);
+    }, [location, country]);
 
     useEffect(() => {
         if (!weather) return;
