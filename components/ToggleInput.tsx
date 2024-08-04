@@ -16,7 +16,7 @@ const ToggleInput = (props: ToggleInputProps) => {
 
     return (
         <View className='flex-row justify-between items-center mb-4'>
-            <RegularText className='text-lg'>{props.title}</RegularText>
+            <RegularText className='text-lg dark:text-dark-text'>{props.title}</RegularText>
             <SwitchSelector
                 initial={0}
                 onPress={props.changeHandler}

@@ -6,10 +6,12 @@ import {SemiBoldText} from "@/components/StyledText";
 import ToggleInput from "@/components/ToggleInput";
 import SettingsItem from "@/components/SettingsItem";
 import auth from "@react-native-firebase/auth";
+import {useColorScheme} from "nativewind"
 const {StatusBarManager} = NativeModules;
 
 const SettingsScreen = () => {
     const bgColor = useThemeColor({}, 'cardColor');
+    const {colorScheme, toggleColorScheme } = useColorScheme();
 
     const handleSignOut = () => {
         Alert.alert(
@@ -36,7 +38,7 @@ const SettingsScreen = () => {
     }
 
     return (
-        <SafeAreaView className='w-full h-full' style={{paddingTop: Platform.OS === 'android' ? StatusBarManager.HEIGHT : 0,}}>
+        <SafeAreaView className='w-full h-full dark:bg-red-500' style={{paddingTop: Platform.OS === 'android' ? StatusBarManager.HEIGHT : 0,}}>
             <CustomHeader title='Settings'/>
             <View className='px-6'>
                 <View className='mt-4'>
@@ -64,7 +66,9 @@ const SettingsScreen = () => {
                                 { label: "Dark", value: "dark" },
                                 { label: "Light", value: "light" }
                             ]}
-                            changeHandler={(value) => console.log('value: ', value)}
+                            changeHandler={(value) => {
+                                toggleColorScheme()
+                            }}
                         />
                     </View>
                 </View>
