@@ -11,6 +11,10 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_WEATHER_API_URL": "http://api.weatherapi.com/v1",
+        "EXPO_PUBLIC_WEATHER_API_KEY": "0773f2586376414a8a6165049242207"
       }
     },
     "production": {}

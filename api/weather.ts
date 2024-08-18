@@ -1,7 +1,7 @@
 import {currentUrl, forecastUrl, historyUrl, searchUrl} from "@/constants/ApiEndPoints";
 import axios from "axios";
 import {LocationObject} from "expo-location";
-const weatherApiKey = '0773f2586376414a8a6165049242207';
+const weatherApiKey = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
 
 const getYesterdayDate = (): string => {
     const today = new Date();
