@@ -2,6 +2,8 @@ export const weatherIcons:any = {
     'Sunny': require('../assets/images/weatherIcons/sunny.png'),
     'Clear': require('../assets/images/weatherIcons/clear.png'),
     'Partly Cloudy': require('../assets/images/weatherIcons/partly_cloudy.png'),
+    'Partly cloudy': require('../assets/images/weatherIcons/partly_cloudy.png'),
+    'partly cloudy': require('../assets/images/weatherIcons/partly_cloudy.png'),
     'Cloudy': require('../assets/images/weatherIcons/cloudy.png'),
     'Overcast': require('../assets/images/weatherIcons/overcast.png'),
     'Mist': require('../assets/images/weatherIcons/mist.png'),

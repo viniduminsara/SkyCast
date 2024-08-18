@@ -21,7 +21,10 @@ const LocationItem = ({data, handler}: LocationItemProps) => {
             <View className='flex-row items-center gap-x-2'>
                 <Image source={weatherIcons[data.current.condition.text]} className='w-20 h-20'/>
                 <View>
-                    <SemiBoldText className='text-white'>{data.location.name}, {data.location.country}</SemiBoldText>
+                    <SemiBoldText className='text-white'>
+                        {data.location.name}, {data.location.country.length > 12 ?
+                            `${data.location.country.slice(0, 12)} ...` : data.location.country}
+                    </SemiBoldText>
                     <LightText className='text-2xl text-white'>{data.current.condition.text}</LightText>
                 </View>
             </View>

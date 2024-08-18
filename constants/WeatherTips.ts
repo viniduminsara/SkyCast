@@ -2,6 +2,8 @@ export const weatherTips:any = {
     'Sunny': "It's a great day to be outdoors! Don't forget your sunscreen.",
     'Clear': "Enjoy the clear skies! Perfect for a walk or a bike ride.",
     'Partly Cloudy': "It's okay to hang out with your friends!",
+    'Partly cloudy': "It's okay to hang out with your friends!",
+    'partly cloudy': "It's okay to hang out with your friends!",
     'Cloudy': "It might be a bit gloomy, but it's a great day for indoor activities.",
     'Overcast': "Perfect weather for reading a book or watching a movie indoors.",
     'Mist': "Drive carefully and use your fog lights.",

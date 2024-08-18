@@ -1,5 +1,5 @@
 import {View, ScrollView, Alert, ActivityIndicator} from "react-native";
-import {SafeAreaView} from "@/components/Themed";
+import {SafeAreaView, useThemeColor} from "@/components/Themed";
 import React, {useEffect, useState} from "react";
 import WeatherCard from "@/components/WeatherCard";
 import NewsCard from "@/components/NewsCard";
@@ -9,11 +9,12 @@ import {useRouter} from "expo-router";
 import {useLocation} from "@/context/LocationContext";
 import auth from "@react-native-firebase/auth";
 import {LinearGradient} from "expo-linear-gradient";
+import {Feather} from "@expo/vector-icons";
 
 const DashboardScreen = () => {
 
     const router = useRouter();
-    const {weatherData, currentLocationData} = useLocation();
+    const {weatherData, currentLocationData, location} = useLocation();
     const [news, setNews] = useState<NewsArticle>(
         {
             uuid: "c6953fc5-455e-4a3a-9aa1-88bd7c74ecee",
@@ -33,6 +34,7 @@ const DashboardScreen = () => {
             locale: "za"
         }
     );
+    const bgColor = useThemeColor({}, 'cardColor');
     const user = auth().currentUser;
 
     const getGreeting = () => {
@@ -55,7 +57,8 @@ const DashboardScreen = () => {
                 <RegularText className='text-xl mb-4'>{getGreeting()}</RegularText>
                 <View className='h-auto'>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{flexGrow: 1}}>
-                        {currentLocationData ?
+                        {location ?
+                            currentLocationData ?
                             <WeatherCard
                                 data={{location: currentLocationData.location, current: currentLocationData.current}}
                                 handler={() =>
@@ -77,6 +80,8 @@ const DashboardScreen = () => {
                             >
                                 <ActivityIndicator color='white' size='large'/>
                             </LinearGradient>
+
+                            : ''
                         }
                         {weatherData.map((data, index) => (
                             <WeatherCard
@@ -96,10 +101,20 @@ const DashboardScreen = () => {
                 </View>
                 <View className='mt-6'>
                     <SemiBoldText className='text-2xl mb-4'>Forecast</SemiBoldText>
-                    {currentLocationData ?
+                    {location ?
+                        currentLocationData ?
                         <ForecastCard data={currentLocationData}/>
                         :
                         <RegularText>Loading...</RegularText>
+
+                        :
+
+                        <View className="w-full h-28 p-4 flex justify-center items-center rounded-2xl shadow-md" style={{backgroundColor: bgColor}}>
+                            <View className='flex-row items-center gap-x-2'>
+                                <Feather name="info" size={24} color="orange"/>
+                                <RegularText>Please enable location permission</RegularText>
+                            </View>
+                        </View>
                     }
                 </View>
                 <View className='mt-6'>

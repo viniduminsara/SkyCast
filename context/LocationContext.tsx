@@ -1,13 +1,14 @@
 import React, {createContext, ReactNode, useContext, useEffect, useRef, useState} from "react";
 import * as Location from 'expo-location';
 import {LocationObject} from "expo-location";
-import {Alert, AppState, AppStateStatus} from "react-native";
+import {Alert} from "react-native";
 import firestore from "@react-native-firebase/firestore";
-import auth from "@react-native-firebase/auth";
+import auth, {FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {fetchCurrentLocationData, fetchLocationWeatherData} from "@/api/weather";
 
 interface LocationContextType {
     location: LocationObject | null;
+    requestLocation: () => {},
     userLocations: string[];
     currentLocationData: ForecastData | undefined;
     weatherData: WeatherData[];
@@ -26,31 +27,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
     const [userLocations, setUserLocations] = useState<string[]>([]);
     const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
     const [currentLocationData, setCurrentLocationData] = useState<ForecastData | undefined>(undefined);
-    // const appState = useRef(AppState.currentState);
-    // const [appStateVisible, setAppStateVisible] = useState(appState.current);
     const user = auth().currentUser;
-
-    // useEffect(() => {
-    //     const subscription = AppState.addEventListener('change', async (nextAppState) => {
-    //         try {
-    //             if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-    //                 console.log('App has come to the foreground!');
-    //                 let location = await Location.getCurrentPositionAsync({});
-    //                 setLocation(location);
-    //                 console.log(location)
-    //             }
-    //         }catch (e){
-    //             console.log('Error when getting user location: ', e)
-    //         }
-    //
-    //         appState.current = nextAppState;
-    //         setAppStateVisible(appState.current);
-    //     });
-    //
-    //     return () => {
-    //         subscription.remove();
-    //     };
-    // }, []);
 
     const getUserLocations = async () => {
         const locationSnapshot = await firestore()
@@ -59,34 +36,32 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
             .limit(1)
             .get();
 
-        setUserLocations(locationSnapshot.docs[0].data().locations);
+        setUserLocations([...locationSnapshot.docs[0].data().locations]);
         console.log('user locations: ',locationSnapshot.docs[0].data().locations);
     }
 
     useEffect(() => {
         const getLocation = async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                setLocation(null);
-                return;
+            if (status === 'granted') {
+                let location = await Location.getCurrentPositionAsync({});
+                setLocation(location);
             }
-
-            let location = await Location.getCurrentPositionAsync({});
-            setLocation(location);
         };
         getLocation();
     }, []);
 
     useEffect(() => {
-        getUserLocations();
-    }, []);
+        getUserLocations()
+            .then(() => console.log('User locations fetched.'))
+            .catch((error) => console.log('Error fetching user locations:', error));
+    }, [user?.displayName]);
 
     useEffect(() => {
         if (location) {
             fetchCurrentLocationData(location)
                 .then((data) => {
                     if (data !== null){
-                        console.log('current location weather data: ', data);
                         setCurrentLocationData(data);
                     }else {
                         Alert.alert('Something went wrong', 'Please check your internet connection');
@@ -102,7 +77,6 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
                 fetchLocationWeatherData(userLocation)
                     .then((data) => {
                         if (data !== null){
-                            console.log('user locations data: ', data);
                             setWeatherData(
                                 prevWeatherData => [...prevWeatherData, data]
                             );
@@ -112,7 +86,20 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
                     })
             }
         })
+
     }, [userLocations]);
+
+    const requestLocation = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        console.log(status)
+        if (status !== 'granted') {
+            setLocation(null);
+            return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+    };
 
     const addLocation = async (newLocation: string) => {
         try {
@@ -170,10 +157,8 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
         }
     }
 
-
-
     return (
-        <LocationContext.Provider value={{ location, userLocations, weatherData, currentLocationData, addLocation, removeLocation }}>
+        <LocationContext.Provider value={{ location, requestLocation, userLocations, weatherData, currentLocationData, addLocation, removeLocation }}>
             {children}
         </LocationContext.Provider>
     );

@@ -128,11 +128,9 @@ const SignupScreen = () => {
             </TouchableOpacity>
             <LightText className='text-center mb-8'>Or continue with</LightText>
             <View className='flex flex-row w-full justify-center items-center gap-x-8'>
-                <Entypo name="facebook" size={36} color="#7CA9FF" />
                 <TouchableOpacity onPress={handleGoogleSignup}>
                     <AntDesign name="google" size={36} color="#7CA9FF"/>
                 </TouchableOpacity>
-                <AntDesign name="instagram" size={36} color="#7CA9FF" />
             </View>
             <View className='absolute bottom-8'>
                 <View className='flex w-full flex-row justify-between items-center'>

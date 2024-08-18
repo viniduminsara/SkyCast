@@ -56,6 +56,12 @@ export default {
             },
             eas: {
                 projectId: "98bb2224-0d85-4380-906b-9ffc93a18a20"
+            },
+            "extra": {
+                "env": {
+                    "WEATHER_API_URL": "${EXPO_PUBLIC_WEATHER_API_URL}",
+                    "WEATHER_API_KEY": "${EXPO_PUBLIC_WEATHER_API_KEY}"
+                }
             }
         }
     }
