@@ -66,6 +66,7 @@ function RootLayoutNav() {
                 <LocationProvider>
                     <Stack screenOptions={{ animation: 'ios', headerShown: false }}>
                         <Stack.Screen name="index"/>
+                        <Stack.Screen name="permission"/>
                         <Stack.Screen name="(auth)"/>
                         <Stack.Screen name="(app)"/>
                     </Stack>

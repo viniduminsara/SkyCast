@@ -10,7 +10,7 @@ import {useLocation} from "@/context/LocationContext";
 
 const CustomDrawerContent = (props: React.JSX.IntrinsicAttributes & ScrollViewProps & { children: React.ReactNode; } & React.RefAttributes<ScrollView>) => {
     const router = useRouter();
-    const {weatherData, currentLocationData} = useLocation();
+    const {location, weatherData, currentLocationData} = useLocation();
 
     return (
             <LinearGradient colors={['#3C6FD1', '#7CA9FF']} style={{height: '100%', paddingVertical: 30, paddingHorizontal: 20}}>
@@ -18,7 +18,13 @@ const CustomDrawerContent = (props: React.JSX.IntrinsicAttributes & ScrollViewPr
                     <View style={{height: '100%', flex: 1, justifyContent: 'space-between'}}>
                         <View>
                             <RegularText style={{fontSize: 16, color: '#ffffff', opacity: 0.6}}>Current location</RegularText>
-                            <BoldText style={{fontSize: 20, color: '#ffffff'}}>{currentLocationData?.location.name}, {currentLocationData?.location.country}</BoldText>
+                            <BoldText style={{fontSize: 20, color: '#ffffff'}}>
+                                {location ?
+                                    `${currentLocationData?.location.name}, ${currentLocationData?.location.country}`
+                                    :
+                                    'Not Available'
+                                }
+                            </BoldText>
                             <View style={{marginTop: 30}}>
                                 <RegularText style={{fontSize: 16, color: '#ffffff', opacity: 0.6, marginBottom: 10}}>Locations</RegularText>
                                 {weatherData.map((data, index) => (

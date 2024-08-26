@@ -79,7 +79,7 @@ const DetailScreen = () => {
                 zoom: 5,
             })
         }
-    }, [weather]);
+    }, [weather, historyData, location, country]);
 
     return (
         <SafeAreaView className='w-full h-full'
