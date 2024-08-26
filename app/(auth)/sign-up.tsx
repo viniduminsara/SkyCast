@@ -1,14 +1,15 @@
-import {SafeAreaView, Text} from "@/components/Themed";
+import {SafeAreaView} from "@/components/Themed";
 import {useState} from "react";
-import {Alert, Image, TextInput, TouchableOpacity, View} from "react-native";
+import {Alert, Image, TouchableOpacity, View} from "react-native";
 import {BoldText, LightText, RegularText, SemiBoldText} from "@/components/StyledText";
-import {AntDesign, Entypo} from "@expo/vector-icons";
+import {AntDesign} from "@expo/vector-icons";
 import {useRouter} from "expo-router";
 import StyledTextInput from "@/components/StyledTextInput";
 import PasswordInput from "@/components/PasswordInput";
 import auth from '@react-native-firebase/auth';
 import firestore from "@react-native-firebase/firestore";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {useLocation} from "@/context/LocationContext";
 
 const SignupScreen = () => {
 
@@ -16,6 +17,7 @@ const SignupScreen = () => {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const router = useRouter();
+    const {updateUser} = useLocation();
 
     GoogleSignin.configure({
         webClientId: '191231634753-uoq0oc0i32h8n6do7ped45qtur8mkpsc.apps.googleusercontent.com',
@@ -34,6 +36,7 @@ const SignupScreen = () => {
             auth().signInWithCredential(googleCredential)
                 .then((userCredential) => {
                     console.log(userCredential.user);
+                    updateUser(userCredential.user);
 
                     firestore()
                         .collection('users')
@@ -57,7 +60,6 @@ const SignupScreen = () => {
             console.log(error);
         }
     }
-
 
     const handleSignUp = () => {
         if (name && email && password) {

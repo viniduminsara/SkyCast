@@ -8,12 +8,14 @@ import StyledTextInput from "@/components/StyledTextInput";
 import PasswordInput from "@/components/PasswordInput";
 import auth from "@react-native-firebase/auth";
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
+import {useLocation} from "@/context/LocationContext";
 
 const SignInScreen = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+    const {updateUser} = useLocation();
 
     GoogleSignin.configure({
         webClientId: '191231634753-uoq0oc0i32h8n6do7ped45qtur8mkpsc.apps.googleusercontent.com',
@@ -31,6 +33,7 @@ const SignInScreen = () => {
 
             auth().signInWithCredential(googleCredential)
                 .then((userCredential) => {
+                    updateUser(userCredential.user);
                     console.log(userCredential.user);
                     router.replace('/(app)')
                 })
@@ -48,11 +51,7 @@ const SignInScreen = () => {
                 .signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     console.log('User signed in successfully!');
-
-                    // You can access the signed-in user's information here
-                    const user = userCredential.user;
-                    console.log('User display name:', user.displayName);
-
+                    updateUser(userCredential.user);
                     router.replace('/(app)')
                 })
                 .catch(error => {

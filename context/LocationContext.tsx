@@ -1,19 +1,21 @@
-import React, {createContext, ReactNode, useContext, useEffect, useRef, useState} from "react";
+import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
 import * as Location from 'expo-location';
 import {LocationObject} from "expo-location";
 import {Alert} from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import auth, {FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {fetchCurrentLocationData, fetchLocationWeatherData} from "@/api/weather";
+import {useRouter} from "expo-router";
 
 interface LocationContextType {
     location: LocationObject | null;
-    requestLocation: () => {},
+    updateLocation: (location: LocationObject | null) => void,
+    updateUser: (user: FirebaseAuthTypes.User) => void;
     userLocations: string[];
     currentLocationData: ForecastData | undefined;
     weatherData: WeatherData[];
-    addLocation: (newLocation: string) => {};
-    removeLocation: (location: string) => {};
+    addLocation: (newLocation: string) => void;
+    removeLocation: (location: string) => void;
 }
 
 interface LocationProviderProps {
@@ -27,7 +29,8 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
     const [userLocations, setUserLocations] = useState<string[]>([]);
     const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
     const [currentLocationData, setCurrentLocationData] = useState<ForecastData | undefined>(undefined);
-    const user = auth().currentUser;
+    const [user, setUser] = useState<FirebaseAuthTypes.User | null>(auth().currentUser);
+    const router = useRouter();
 
     const getUserLocations = async () => {
         const locationSnapshot = await firestore()
@@ -42,10 +45,23 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
 
     useEffect(() => {
         const getLocation = async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status === 'granted') {
-                let location = await Location.getCurrentPositionAsync({});
-                setLocation(location);
+            try {
+                const { status } = await Location.getForegroundPermissionsAsync();
+
+                if (status === 'granted') {
+                    const location = await Location.getCurrentPositionAsync({});
+                    setLocation(location);
+
+                    if (user) {
+                        router.replace('/(app)');
+                    } else {
+                        router.replace('/(auth)/sign-in');
+                    }
+                } else if (status === 'denied' || status === 'undetermined') {
+                    router.replace('/permission');
+                }
+            } catch (e) {
+                router.replace('/permission');
             }
         };
         getLocation();
@@ -55,7 +71,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
         getUserLocations()
             .then(() => console.log('User locations fetched.'))
             .catch((error) => console.log('Error fetching user locations:', error));
-    }, [user?.displayName]);
+    }, [user]);
 
     useEffect(() => {
         if (location) {
@@ -89,17 +105,13 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
 
     }, [userLocations]);
 
-    const requestLocation = async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        console.log(status)
-        if (status !== 'granted') {
-            setLocation(null);
-            return;
-        }
+    const updateUser = (user: FirebaseAuthTypes.User) => {
+        setUser(user);
+    }
 
-        let location = await Location.getCurrentPositionAsync({});
+    const updateLocation = (location: LocationObject | null) => {
         setLocation(location);
-    };
+    }
 
     const addLocation = async (newLocation: string) => {
         try {
@@ -158,7 +170,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
     }
 
     return (
-        <LocationContext.Provider value={{ location, requestLocation, userLocations, weatherData, currentLocationData, addLocation, removeLocation }}>
+        <LocationContext.Provider value={{ location, updateLocation, updateUser, userLocations, weatherData, currentLocationData, addLocation, removeLocation }}>
             {children}
         </LocationContext.Provider>
     );

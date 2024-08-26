@@ -10,32 +10,25 @@ import {useLocation} from "@/context/LocationContext";
 import auth from "@react-native-firebase/auth";
 import {LinearGradient} from "expo-linear-gradient";
 import {Feather} from "@expo/vector-icons";
+import {fetchNewsData} from "@/api/news";
 
 const DashboardScreen = () => {
 
     const router = useRouter();
     const {weatherData, currentLocationData, location} = useLocation();
-    const [news, setNews] = useState<NewsArticle>(
-        {
-            uuid: "c6953fc5-455e-4a3a-9aa1-88bd7c74ecee",
-            title: "Weather: Take precautions during inclement weather conditions",
-            description: "South African Weather Service issued severe weather alerts, including severe thunderstorms, damaging and strong winds, and disruptive rains.",
-            keywords: "",
-            snippet: "Inclement weather conditions are expected in six provinces over the next two days. Photo: Pexels\n\nThe South African government has urged residents in various pr...",
-            url: "https://www.thesouthafrican.com/news/weather-take-precautions-during-inclement-weather-conditions-29-december-2023/",
-            image_url: "https://www.thesouthafrican.com/wp-content/uploads/2023/12/Untitled-design-2023-12-29T153959.273.jpg",
-            language: "en",
-            published_at: "2023-12-29T14:02:13.000000Z",
-            source: "thesouthafrican.com",
-            categories: [
-                "general"
-            ],
-            relevance_score: 21.609299,
-            locale: "za"
-        }
-    );
+    const [news, setNews] = useState<NewsArticle[]>([]);
     const bgColor = useThemeColor({}, 'cardColor');
     const user = auth().currentUser;
+
+    useEffect(() => {
+        fetchNewsData()
+            .then((data) => {
+                if (data.results) {
+                    // console.log('news : ', data.results)
+                    setNews(data.results)
+                }
+            })
+    }, []);
 
     const getGreeting = () => {
         const currentHour = new Date().getHours();
@@ -119,7 +112,12 @@ const DashboardScreen = () => {
                 </View>
                 <View className='mt-6'>
                     <SemiBoldText className='text-2xl mb-4'>News</SemiBoldText>
-                    <NewsCard data={news}/>
+                    {news.map((value, index) => {
+                        console.log(value)
+                        return (
+                            <NewsCard data={value} key={index}/>
+                        )
+                    })}
                 </View>
             </ScrollView>
         </SafeAreaView>
