@@ -53,6 +53,7 @@ export const weatherIcons:any = {
     'Moderate or heavy showers of ice pellets': require('../assets/images/weatherIcons/moderate_or_heavy_showers_of_ice_pellets.png'),
     'Patchy light rain with thunder': require('../assets/images/weatherIcons/patchy_light_rain_with_thunder.png'),
     'Moderate or heavy rain with thunder': require('../assets/images/weatherIcons/moderate_or_heavy_rain_with_thunder.png'),
+    'Thundery outbreaks in nearby': require('../assets/images/weatherIcons/moderate_or_heavy_rain_with_thunder.png'),
     'Patchy light snow with thunder': require('../assets/images/weatherIcons/patchy_light_snow_with_thunder.png'),
     'Moderate or heavy snow with thunder': require('../assets/images/weatherIcons/moderate_or_heavy_snow_with_thunder.png'),
 }

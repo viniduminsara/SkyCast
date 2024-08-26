@@ -1,6 +1,6 @@
 import {currentUrl, forecastUrl, historyUrl, searchUrl} from "@/constants/ApiEndPoints";
-import axios from "axios";
 import {LocationObject} from "expo-location";
+import {apiCall} from "@/api/apiCall";
 const weatherApiKey = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
 
 const getYesterdayDate = (): string => {
@@ -23,21 +23,6 @@ const currentLocationEndPoint = (query: LocationObject) => `${forecastUrl}?key=$
 const historyEndPoint = (query: string) => `${historyUrl}?key=${weatherApiKey}&q=${query}&dt=${getYesterdayDate()}`;
 
 const locationWeatherEndPoint = (query: string) => `${currentUrl}?key=${weatherApiKey}&q=${query}`;
-
-const apiCall = async (endpoint: string) => {
-    const options = {
-        method: 'GET',
-        url: endpoint
-    }
-
-    try {
-        const response = await axios.request(options);
-        return response.data;
-    }catch (err){
-        console.log('error: ', err);
-        return null;
-    }
-}
 
 export const fetchSearchData = (query: string) => {
     return apiCall(searchEndPoint(query));

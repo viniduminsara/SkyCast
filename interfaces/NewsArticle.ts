@@ -1,15 +1,27 @@
 interface NewsArticle {
-    uuid: string;
+    article_id: string;
     title: string;
+    link: string;
+    keywords: string[];
+    creator: string[];
+    video_url: string | null;
     description: string;
-    keywords: string;
-    snippet: string;
-    url: string;
+    content: string;
+    pubDate: string;
     image_url: string;
+    source_id: string;
+    source_priority: number;
+    source_name: string;
+    source_url: string;
+    source_icon: string;
     language: string;
-    published_at: string;
-    source: string;
-    categories: string[];
-    relevance_score: number;
-    locale: string;
+    country: string[];
+    category: string[];
+    ai_tag: string;
+    sentiment: string;
+    sentiment_stats: string;
+    ai_region: string;
+    ai_org: string;
+    duplicate: boolean;
 }
+
