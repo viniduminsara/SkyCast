@@ -1,12 +1,12 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
+import {useFonts} from 'expo-font';
+import {Stack} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import {useEffect, useState} from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from 'react-native';
+import {useColorScheme} from 'react-native';
 import {
     Poppins_200ExtraLight,
     Poppins_400Regular,
@@ -15,6 +15,7 @@ import {
 } from "@expo-google-fonts/poppins";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {LocationProvider} from "@/context/LocationContext";
+import {NewsProvider} from "@/context/NewsContext";
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -53,7 +54,7 @@ export default function RootLayout() {
         return null;
     }
 
-    return <RootLayoutNav />;
+    return <RootLayoutNav/>;
 }
 
 function RootLayoutNav() {
@@ -64,12 +65,14 @@ function RootLayoutNav() {
         <SafeAreaProvider>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                 <LocationProvider>
-                    <Stack screenOptions={{ animation: 'ios', headerShown: false }}>
-                        <Stack.Screen name="index"/>
-                        <Stack.Screen name="permission"/>
-                        <Stack.Screen name="(auth)"/>
-                        <Stack.Screen name="(app)"/>
-                    </Stack>
+                    <NewsProvider>
+                        <Stack screenOptions={{animation: 'ios', headerShown: false}}>
+                            <Stack.Screen name="index"/>
+                            <Stack.Screen name="permission"/>
+                            <Stack.Screen name="(auth)"/>
+                            <Stack.Screen name="(app)"/>
+                        </Stack>
+                    </NewsProvider>
                 </LocationProvider>
             </ThemeProvider>
         </SafeAreaProvider>

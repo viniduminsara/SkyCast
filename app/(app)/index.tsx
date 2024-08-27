@@ -1,6 +1,6 @@
-import {View, ScrollView, Alert, ActivityIndicator} from "react-native";
+import {View, ScrollView, ActivityIndicator, TouchableOpacity} from "react-native";
 import {SafeAreaView, useThemeColor} from "@/components/Themed";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import WeatherCard from "@/components/WeatherCard";
 import NewsCard from "@/components/NewsCard";
 import {RegularText, SemiBoldText} from "@/components/StyledText";
@@ -9,26 +9,17 @@ import {useRouter} from "expo-router";
 import {useLocation} from "@/context/LocationContext";
 import auth from "@react-native-firebase/auth";
 import {LinearGradient} from "expo-linear-gradient";
-import {Feather} from "@expo/vector-icons";
-import {fetchNewsData} from "@/api/news";
+import {Feather, FontAwesome6} from "@expo/vector-icons";
+import {useNews} from "@/context/NewsContext";
 
 const DashboardScreen = () => {
 
     const router = useRouter();
     const {weatherData, currentLocationData, location} = useLocation();
-    const [news, setNews] = useState<NewsArticle[]>([]);
+    const {weatherNews} = useNews();
     const bgColor = useThemeColor({}, 'cardColor');
+    const color = useThemeColor({}, 'text');
     const user = auth().currentUser;
-
-    useEffect(() => {
-        fetchNewsData()
-            .then((data) => {
-                if (data.results) {
-                    // console.log('news : ', data.results)
-                    setNews(data.results)
-                }
-            })
-    }, []);
 
     const getGreeting = () => {
         const currentHour = new Date().getHours();
@@ -92,8 +83,8 @@ const DashboardScreen = () => {
                         ))}
                     </ScrollView>
                 </View>
-                <View className='mt-6'>
-                    <SemiBoldText className='text-2xl mb-4'>Forecast</SemiBoldText>
+                <View className=''>
+                    <SemiBoldText className='text-2xl mt-6 mb-3'>Forecast</SemiBoldText>
                     {location ?
                         currentLocationData ?
                         <ForecastCard data={currentLocationData}/>
@@ -110,14 +101,19 @@ const DashboardScreen = () => {
                         </View>
                     }
                 </View>
-                <View className='mt-6'>
-                    <SemiBoldText className='text-2xl mb-4'>News</SemiBoldText>
-                    {news.map((value, index) => {
-                        console.log(value)
-                        return (
-                            <NewsCard data={value} key={index}/>
-                        )
-                    })}
+                <View className=''>
+                    <TouchableOpacity className='flex-row justify-between pr-4 mt-6 mb-3' onPress={() => router.push('/news')}>
+                        <SemiBoldText className='text-2xl'>News</SemiBoldText>
+                        <FontAwesome6 name="arrow-right" size={24} color={color} />
+                    </TouchableOpacity>
+
+                    {weatherNews.length !== 0 ?
+                        <NewsCard data={weatherNews[0]}/>
+
+                        :
+
+                        ''
+                    }
                 </View>
             </ScrollView>
         </SafeAreaView>
